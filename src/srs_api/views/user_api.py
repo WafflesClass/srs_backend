@@ -6,7 +6,7 @@ from rest_framework import permissions, status
 from django.forms.models import model_to_dict
 
 from srs_lib.managers import user_manager
-from srs_lib.utils import api_response_data
+from srs_lib.utils import api_response_data, api_err_handler
 from srs_lib.constants import Result
 
 # class UserMain(APIView):
@@ -23,6 +23,7 @@ from srs_lib.constants import Result
 
 @permission_classes((AllowAny))
 @api_view(["POST"])
+@api_err_handler()
 def sign_up(request):
     email = request.data.get('email', None)
     password = request.data.get('password', None)
@@ -38,6 +39,7 @@ def sign_up(request):
 
 @permission_classes((AllowAny))
 @api_view(["POST"])
+@api_err_handler()
 def log_in(request):
     email = request.data.get('email', None)
     password = request.data.get('password', None)
@@ -52,6 +54,4 @@ def log_in(request):
         return api_response_data(status.HTTP_403_FORBIDDEN, {'error': 'Not authenticated'})
     # user = user_manager.get(email)
     user_details = user_manager.log_in(user, request)    
-    print("HIEU")
-    print(user_details)
     return api_response_data(status.HTTP_200_OK, {'user_details': user_details})
