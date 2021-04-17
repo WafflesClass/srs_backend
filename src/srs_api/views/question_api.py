@@ -2,16 +2,18 @@
 import copy
 
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework import permissions, status
 from django.forms.models import model_to_dict
 
 from srs_lib.managers import poll_manager, qa_manager
 from srs_lib.utils import api_response_data, api_err_handler
 
-@permission_classes((AllowAny))
 @api_view(["POST"])
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
 @api_err_handler()
 def reply(request, **kwargs):
     params_dict = copy.deepcopy(request.data)

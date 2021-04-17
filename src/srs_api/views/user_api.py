@@ -39,9 +39,9 @@ def sign_up(request):
     )
     return api_response_data(status.HTTP_200_OK, {'user': model_to_dict(user)})
 
-@permission_classes((AllowAny))
 @api_view(["POST"])
 @api_err_handler()
+@permission_classes((AllowAny))
 def log_in(request):
     email = request.data.get('email', None)
     password = request.data.get('password', None)

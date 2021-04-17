@@ -2,8 +2,9 @@
 import copy
 
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import IsAuthenticated, IsAuthenticated
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework import permissions, status
 from django.forms.models import model_to_dict
 
@@ -22,15 +23,17 @@ def poll_main(request):
         return function_mappings[request.method](request)
     return api_response_data(status.HTTP_404_NOT_FOUND, {'err': 'Not supported request method'})
 
-@permission_classes((AllowAny))
 @api_view(["POST"])
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
 @api_err_handler()
 def create_poll(request):
     poll = poll_manager.create(**request.data)
     return api_response_data(status.HTTP_200_OK, {'poll': model_to_dict(poll)})
 
-@permission_classes((AllowAny))
 @api_view(["GET"])
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
 @api_err_handler()
 def get_user_polls(request):
     polls = poll_manager.get_for_user(creator_id=request.data['creator_id'])
@@ -50,8 +53,9 @@ def qa_main(request, **kwargs):
             return function_mappings[request.method](request, **kwargs)
     return api_response_data(status.HTTP_404_NOT_FOUND, {'err': 'Not supported request method'})
 
-@permission_classes((AllowAny))
 @api_view(["POST"])
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
 @api_err_handler()
 def create_qa(request, **kwargs):
     params_dict = copy.deepcopy(request.data)
@@ -63,8 +67,9 @@ def create_qa(request, **kwargs):
         status.HTTP_200_OK, 
         {'new_question': model_to_dict(new_question), 'correct_ans_l': correct_ans_l, 'wrong_ans_l': wrong_ans_l})
 
-@permission_classes((AllowAny))
 @api_view(["GET"])
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
 @api_err_handler()
 def get_poll_qas(request, **kwargs):
     poll_id = kwargs['pk']
