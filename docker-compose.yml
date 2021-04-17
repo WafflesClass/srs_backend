@@ -43,9 +43,9 @@ services:
     container_name: pz01
     env_file:
       - ./.envs/.postgres
-    # volumes:
-    #   - local_postgres_data:/var/lib/postgresql/data
-    #   - local_postgres_data_backups:/backups
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data
+      - local_postgres_data_backups:/backups
     networks:
       - djangonetwork
   redis:

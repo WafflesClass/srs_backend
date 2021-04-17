@@ -25,6 +25,8 @@ from srs_lib.constants import Result
 @api_view(["POST"])
 @api_err_handler()
 def sign_up(request):
+    print("SIGNUP")
+    print(request)
     email = request.data.get('email', None)
     password = request.data.get('password', None)
     # TODO: Make this param validation decorator

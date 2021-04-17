@@ -53,3 +53,30 @@ class User(AbstractBaseUser, PermissionsMixin):
     EMAIL_FIELD = 'email'
     objects = UserManager()
 
+class Poll(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    creator = models.ForeignKey(User, related_name='user_posts', on_delete=models.CASCADE, default=None)
+    src_poll = models.ForeignKey('self', related_name='fork_polls', on_delete=models.SET_NULL, null=True, default=None)
+
+class Question(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    poll = models.ForeignKey(Poll, related_name='poll_questions', on_delete=models.CASCADE, default=None)
+    question_type = models.CharField(max_length=100, default=None) # TODO: Refactor to enum
+    content = models.TextField()
+
+class Answer(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    question = models.ForeignKey(Question, related_name='question_answers', on_delete=models.CASCADE, default=None)
+    content = models.TextField()
+    is_correct = models.BooleanField(default=False)
+
+class Reply(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    question = models.ForeignKey(Question, related_name='question_replies', on_delete=models.CASCADE, default=None)
+    creator = models.ForeignKey(User, related_name='user_replies', on_delete=models.SET_NULL, null=True, default=None)
+    content = models.TextField()
+
+    class Meta:
+        unique_together = ('creator', 'question')

@@ -14,18 +14,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf.urls import url
+from django.urls import path
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 
 from myapp.views import ShowHelloWorld
-from srs_api.views import user_api
+from srs_api.views import user_api, poll_api, question_api
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'api/user/signup', user_api.sign_up),
-    url(r'api/user/login', user_api.log_in),
-    url(r'^$', ShowHelloWorld.as_view()),
+    path('admin/', admin.site.urls),
+    path('api/user/signup', user_api.sign_up),
+    path('api/user/login', user_api.log_in),
+    path('api/poll', poll_api.poll_main),
+    path('api/poll/<uuid:pk>/qa', poll_api.qa_main),
+    path('api/question/<uuid:pk>/reply', question_api.reply),
+    path('^', ShowHelloWorld.as_view()),
 ]
 # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

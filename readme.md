@@ -35,6 +35,9 @@ python manage.py createsuperuser
 
 python manage.py dbshell
 DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO public;
+
+python manage.py migrate sessions
+
 # Technical Document
 
 ## DB Diagrams
